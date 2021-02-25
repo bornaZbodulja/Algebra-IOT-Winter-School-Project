@@ -2,13 +2,14 @@ from flask import Flask
 from flask import jsonify
 from flask_mysqldb import MySQL
 from flask import request
-import datetime
+from datetime import datetime
 import json
 import decimal
+import datetime
 
 class Encoder(json.JSONEncoder):
     def default(self, obj):
-        if isinstance(obj, decimal.Decimal) or isinstance(obj, (datetime.date, datetime.datetime)): 
+        if isinstance(obj, decimal.Decimal) or isinstance(obj, (datetime.date, datetime.datetime)):
             return str(obj)
         return super(Encoder, self).default(obj)
 
@@ -41,7 +42,7 @@ def get_all():
     conn.close()
 
     return jsonify({'measurements': rows})
-    # return json.dumps(rows, cls = Encoder)
+    #return json.dumps(rows, cls = Encoder)
 
 
 @app.route('/api/telemetry/post', methods=['POST'])
@@ -53,7 +54,7 @@ def insert_measurement():
     cursor = conn.cursor()
 
 
-    # createdOn = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    # createdOn = datetime.now().strftime('%Y-%m-%d|%H:%M:%S')
     cmd = "INSERT INTO Measurement (DeviceId, SensorName, SensorValue, CreatedOn) VALUES (%s, %s, %s, %s)"
     params = (new_measurement["DeviceId"], new_measurement['SensorName'], new_measurement['SensorValue'], new_measurement["CreatedOn"])
 
