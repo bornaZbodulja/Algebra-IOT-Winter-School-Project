@@ -33,11 +33,13 @@ def chartTemperature():
 
 @app.route('/heartrate')
 def chartHeartrate():
-    return render_template('heartrate.html')
+    labels, data = get_todays_measurements("Heartrate")
+    return render_template('heartrate.html', labels=labels, data=data)
 
 @app.route('/battery')
 def chartBattery():
-    return render_template('battery.html')
+    labels, data = get_todays_measurements("Battery")
+    return render_template('battery.html', labels=labels, data=data)
 
 
 @app.route('/map')
@@ -109,31 +111,34 @@ def add_measurement(data):
     return "200"
 
 def get_todays_measurements(sensorName):
-    today = date.today()
-    date_from = datetime(today.year, today.month, today.day, 0, 0, 0).strftime('%Y-%m-%d %H:%M:%S')
-    date_to = datetime(today.year, today.month, today.day, 23, 59, 59).strftime('%Y-%m-%d %H:%M:%S')
+    # today = date.today()
+    d = datetime.timedelta(days = 1)
+    # date_from = datetime(today.year, today.month, 25, 20, 0, 0).strftime('%Y-%m-%d %H:%M:%S')
+    # date_to = datetime(today.year, today.month, today.day, 23, 59, 59).strftime('%Y-%m-%d %H:%M:%S')
+    date_from = (datetime.now() - d).strftime('%Y-%m-%d %H:%M:%S')
+    date_to = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     args = '?' + "DeviceId=1&" + "dateFrom=" + date_from + '&' + "dateTo=" + date_to + '&' + "SensorName=" + sensorName
     GET_URL = "http://algebra-iot-zbodulja.westeurope.cloudapp.azure.com/api/telemetry/measurement" + args
     r = requests.get(url=GET_URL)
     if(r.status_code == 200):
-        data = json.loads(r.json())
+        data = json.loads(r.text)
         labels = list()
-        labels = [parse_datetime_to_time(measurement["CreatedOn"]) for measurement in data]
+        labels = [parse_datetime_to_time(str(measurement["CreatedOn"])) for measurement in data]
         sensor_data = [measurement["SensorValue"] for measurement in data]
-        
+
         return labels, sensor_data
-        
-        
+
+
     else:
         print("Error " + str(r.status_code))
         return list(), list()
 
 def parse_datetime_to_time(date_time):
-    date_time_obj = dt.datetime.strptime(date_time, '%Y-%m-%d %H:%M:%S')
+    #print(str(date_time[0]))
+    date_time_obj = dt.datetime.strptime(date_time, '%a, %d %b %Y %H:%M:%S %Z')
     return date_time_obj.strftime('%H:%M:%S')
-    
-    
+
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=80)
-

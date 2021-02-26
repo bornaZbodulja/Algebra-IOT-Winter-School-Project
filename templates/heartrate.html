@@ -38,35 +38,24 @@
         <canvas id="myChart"></canvas>
     </div>
     <script>
+        var labels = JSON.parse('{{ labels|tojson }}')
+        var data = JSON.parse('{{ data|tojson }}')
+
         let myChart = document.getElementById('myChart').getContext('2d');
 
         let massPopChart = new Chart(myChart, {
             type:'line', // bar, horizontal, pie, line, doughnut, polarArea
             data:{
-                labels:[
-                        '19:48:56', 
-                        '19:58:56', 
-                        '20:08:56', 
-                        '20:18:56', 
-                        '20:28:56',
-                        '20:38:56'
-                    ],
+                labels:labels,
                 datasets:[{
-                    label:'Temperature',
-                    data:[
-                        36.7,
-                        36.8,
-                        36.6,
-                        36.5,
-                        36.4,
-                        36.9
-                    ],
+                    label:'Heart rate',
+                    data:data,
                     fill:false,
                     // backgroundColor:'green'
                     // ['green','red', 'blue','yellow']
                     backgroundColor:'red',
                     borderWidth:4,
-                    borderColor:'#777',
+                    borderColor:'red',
                     hoverBorderWidth:3,
                     hoverBorderColor:'#000'
                 }]
