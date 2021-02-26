@@ -4,13 +4,17 @@ from flask_mysqldb import MySQL
 from flask import session, request
 from flask import make_response, abort
 from datetime import datetime
+from datetime import date
+import json
+import requests
+import datetime as dt
 
 mysql = MySQL()
 app = Flask(__name__)
 
 # MySQL configurations
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'mysql123'
+app.config['MYSQL_USER'] = 'telemetryuser'
+app.config['MYSQL_PASSWORD'] = 'telemetryuser123'
 app.config['MYSQL_DB'] = 'telemetryDB'
 app.config['MYSQL_HOST'] = 'localhost'
 mysql.init_app(app)
@@ -22,8 +26,9 @@ def main():
 
 @app.route('/temperature')
 def chartTemperature():
-    labels = ['19:48:56', '19:58:56', '20:08:56', '20:18:56', '20:28:56', '20:38:56']
-    data = [36.7, 36.8, 36.6, 36.5, 36.4, 36.9]
+    # labels = ['19:48:56', '19:58:56', '20:08:56', '20:18:56', '20:28:56', '20:38:56']
+    # data = [36.7, 36.8, 36.6, 36.5, 36.4, 36.9]
+    labels, data = get_todays_measurements("Temperature")
     return render_template('temperature.html', labels=labels, data=data)
 
 @app.route('/heartrate')
@@ -103,6 +108,31 @@ def add_measurement(data):
         print ("Error: unable to fetch items", e)
     return "200"
 
+def get_todays_measurements(sensorName):
+    today = date.today()
+    date_from = datetime(today.year, today.month, today.day, 0, 0, 0).strftime('%Y-%m-%d %H:%M:%S')
+    date_to = datetime(today.year, today.month, today.day, 23, 59, 59).strftime('%Y-%m-%d %H:%M:%S')
+    args = '?' + "DeviceId=1&" + "dateFrom=" + date_from + '&' + "dateTo=" + date_to + '&' + "SensorName=" + sensorName
+    GET_URL = "http://algebra-iot-zbodulja.westeurope.cloudapp.azure.com/api/telemetry/measurement" + args
+    r = requests.get(url=GET_URL)
+    if(r.status_code == 200):
+        data = json.loads(r.json())
+        labels = list()
+        labels = [parse_datetime_to_time(measurement["CreatedOn"]) for measurement in data]
+        sensor_data = [measurement["SensorValue"] for measurement in data]
+        
+        return labels, sensor_data
+        
+        
+    else:
+        print("Error " + str(r.status_code))
+        return list(), list()
+
+def parse_datetime_to_time(date_time):
+    date_time_obj = dt.datetime.strptime(date_time, '%Y-%m-%d %H:%M:%S')
+    return date_time_obj.strftime('%H:%M:%S')
+    
+    
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=80)

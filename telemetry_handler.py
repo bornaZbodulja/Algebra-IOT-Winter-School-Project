@@ -80,7 +80,7 @@ if __name__ == "__main__":
     client.connect('localhost', 1883, 60)
     client.subscribe("algebra/iot/zbodulja/#")
     
-    client.publish("algebra/iot/zbodulja/Temperature", '36.3')
-    client.publish("algebra/iot/zbodulja/Heartrate", '113')
-    client.publish("algebra/iot/zbodulja/Battery", '89.3')
+    #client.publish("algebra/iot/zbodulja/Temperature", '36.3')
+    #client.publish("algebra/iot/zbodulja/Heartrate", '113')
+    #client.publish("algebra/iot/zbodulja/Battery", '89.3')
     client.loop_forever()

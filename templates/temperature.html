@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
+
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
+
+    <link rel="stylesheet" href="http://leaflet.github.io/Leaflet.label/leaflet.label.css" />
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.js"></script>
+    <script src="/static/js/home.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Temperature</title>
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation" min-height= "50px">
+        <div class="container-fluid">
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li role="presentation" ><a href="/">Home</a></li>
+                    <li role="presentation" ><a href="/map">Map</a></li>
+                    <li role="presentation" class="active"><a href="/temperature">Temperature</a></li>
+                    <li role="presentation" ><a href="/heartrate">Heartrate</a></li>
+                    <li role="presentation" ><a href="/battery">Battery</a></li>
+                </ul>
+                <h3 class="text-muted"style="text-align:right;">Dashboard</h3>
+            </div>
+        </div>
+      </div>
+    <div class="container">
+        <canvas id="myChart"></canvas>
+    </div>
+    <script>
+        var labels = JSON.parse('{{ labels|tojson }}')
+        var data = JSON.parse('{{ data|tojson }}')
+        // console.log(typeof labels)
+        // console.log(typeof data)
+        let myChart = document.getElementById('myChart').getContext('2d');
+
+        let massPopChart = new Chart(myChart, {
+            type:'line', // bar, horizontal, pie, line, doughnut, polarArea
+            data:{
+                labels:labels,
+                datasets:[{
+                    label:'Temperature',
+                    data:data,
+                    fill:false,
+                    // backgroundColor:'green'
+                    // ['green','red', 'blue','yellow']
+                    backgroundColor:'red',
+                    borderWidth:4,
+                    borderColor:'#777',
+                    hoverBorderWidth:3,
+                    hoverBorderColor:'#000'
+                }]
+            },
+            options:{}
+        });
+    </script>
+</body>
+</html>
