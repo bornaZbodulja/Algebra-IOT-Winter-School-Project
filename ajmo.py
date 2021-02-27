@@ -112,7 +112,7 @@ def add_measurement(data):
 
 def get_todays_measurements(sensorName):
     # today = date.today()
-    d = datetime.timedelta(days = 1)
+    d = dt.timedelta(days = 1.8)
     # date_from = datetime(today.year, today.month, 25, 20, 0, 0).strftime('%Y-%m-%d %H:%M:%S')
     # date_to = datetime(today.year, today.month, today.day, 23, 59, 59).strftime('%Y-%m-%d %H:%M:%S')
     date_from = (datetime.now() - d).strftime('%Y-%m-%d %H:%M:%S')

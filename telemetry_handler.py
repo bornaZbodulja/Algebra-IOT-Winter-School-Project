@@ -60,14 +60,14 @@ def post_data(json_data):
     else:
         print("Error " + str(r.status_code))
 
-def get_data(json_data):
+'''def get_data(json_data):
     r = requests.get(url=GET_URL, json=json_data)
     if(r.status_code == 200):
         data = r.json()
         print(data)
         
     else:
-        print("Error " + str(r.status_code))
+        print("Error " + str(r.status_code))'''
 
 
 if __name__ == "__main__":
