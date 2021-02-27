@@ -56,7 +56,7 @@ def post_measurement():
         'DeviceId' : content['DeviceId'],
         'SensorName' : content['SensorName'],
         'SensorValue' : content['SensorValue'],
-        'CreatedOn' : datetime.now()
+        'CreatedOn' : datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     }
     return add_measurement(measurement)
 
